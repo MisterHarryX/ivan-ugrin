@@ -18,14 +18,14 @@ npm run dev -- --host 127.0.0.1 --port 5177 --strictPort
 - Кабинет: https://ivan-ugrin.vercel.app/admin, пароль задан в переменной `ADMIN_PASSWORD` проекта на Vercel (и локально в `.env.local`).
 - Редактор на сайте: войдите в кабинет и откройте https://ivan-ugrin.vercel.app/?edit. Правка любого текста, фото, контактов (Telegram, Max), затем «Опубликовать».
 - Хранилища: база Upstash Redis и Vercel Blob общие с проектом `psixolog`, данные Ивана лежат отдельно (ключи `ugrin:*`, фото в `ugrin/media/`). При желании подключите отдельную базу в Vercel → Storage и замените `KV_REST_API_*` и `BLOB_READ_WRITE_TOKEN`.
-- Обновить сайт: `vercel deploy --prod` из этой папки.
+- Обновить сайт: `git push` в `main` — Vercel соберёт его сам (см. раздел GitHub).
 
 ## GitHub
 
 - Код: https://github.com/MisterHarryX/ivan-ugrin (открытый). Пароли, заявки и данные (`.env.local`, `.data/`) в репозиторий не попадают.
 - Копия на GitHub Pages: https://misterharryx.github.io/ivan-ugrin/ — та же страница. Заявки, свободное время и правки из редактора она берёт с сервера на Vercel (в `server/http.ts` этот адрес разрешён), поэтому заявки с обеих копий попадают в один кабинет. Сам кабинет и редактор работают только на Vercel.
 - Обновить копию на GitHub Pages: `npm run deploy:pages` (собирает в `dist-pages` и отправляет в ветку `gh-pages`).
-- Чтобы Vercel сам пересобирал сайт после каждого `git push`, в GitHub нужно один раз установить приложение Vercel (https://github.com/apps/vercel) и подключить репозиторий: `vercel git connect`.
+- Vercel подключён к репозиторию: после каждого `git push` в ветку `main` сайт ivan-ugrin.vercel.app пересобирается сам (1–2 минуты). `vercel deploy --prod` больше не нужен.
 
 ## Блоки страницы
 
