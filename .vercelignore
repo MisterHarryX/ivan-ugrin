@@ -1,0 +1,10 @@
+.env*
+!.env.example
+.data
+node_modules
+dist
+dist-pages
+artifacts
+.vercel-admin.local
+.vercel
+_source

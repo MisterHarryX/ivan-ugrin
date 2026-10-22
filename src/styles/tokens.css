@@ -1,0 +1,92 @@
+/*
+ * Design tokens for the psychological practice template.
+ * The six base colours are defaults only: at build time vite.config.ts injects
+ * `site.theme` (src/config/site.ts), which takes precedence. Everything else is
+ * derived, so changing the base colours re-themes the whole site.
+ */
+:root {
+  --c-bg: #0b231f;
+  --c-surface: #12342d;
+  --c-amethyst: #3fae8c;
+  --c-rose: #ec9445;
+  --c-gold: #eabf52;
+  --c-ivory: #f6f0df;
+}
+
+:root {
+  /* Colour roles */
+  --c-text: var(--c-ivory);
+  --c-text-muted: color-mix(in oklab, var(--c-ivory) 76%, var(--c-bg));
+  --c-text-soft: color-mix(in oklab, var(--c-ivory) 62%, var(--c-bg));
+  --c-on-gold: var(--c-bg);
+  --c-surface-deep: color-mix(in oklab, var(--c-surface) 55%, var(--c-bg));
+  --c-surface-raised: color-mix(in oklab, var(--c-surface), var(--c-amethyst) 10%);
+  --c-line: color-mix(in oklab, var(--c-gold) 28%, transparent);
+  --c-line-strong: color-mix(in oklab, var(--c-gold) 55%, transparent);
+  --c-line-soft: color-mix(in oklab, var(--c-ivory) 13%, transparent);
+
+  /* Accent tones for topic cards */
+  --tone-rose: var(--c-rose);
+  --tone-gold: var(--c-gold);
+  --tone-amethyst: var(--c-amethyst);
+  --tone-sky: color-mix(in oklab, var(--c-amethyst) 35%, #8fb4f0);
+  --tone-peach: color-mix(in oklab, var(--c-rose) 40%, #f2b48c);
+
+  /* Typography */
+  /* Printed-book serif (Old Standard, after 19th-century Russian type), a real
+     hand for personal notes, and a plain text face built for Russian. */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-hand: 'Cormorant Garamond', Georgia, serif;
+  --font-text: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --fs-small: 0.875rem;
+  --fs-body: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --fs-lead: clamp(1.1rem, 1.03rem + 0.3vw, 1.28rem);
+  --fs-h3: clamp(1.4rem, 1.25rem + 0.6vw, 1.8rem);
+  --fs-h2: clamp(2rem, 1.4rem + 2.3vw, 3.4rem);
+  --fs-display: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem);
+  --measure: 36rem;
+
+  /* Space */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4.5rem;
+  --section-space: clamp(5rem, 3rem + 7vw, 9.5rem);
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --wrap: 1280px;
+  --header-h: 72px;
+
+  /* Shape */
+  --radius-s: 10px;
+  --radius-m: 18px;
+  --radius-l: 28px;
+  --radius-photo: 24px;
+
+  /* Motion (animate skill curves) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-press: 160ms;
+  --dur-ui: 220ms;
+
+  /* Depth */
+  --shadow-card: 0 28px 60px -24px rgb(4 8 6 / 0.9), 0 10px 24px -12px rgb(4 8 6 / 0.7);
+  --shadow-photo: 0 40px 90px -40px rgb(4 8 6 / 0.95), 0 0 0 1px color-mix(in oklab, var(--c-gold) 18%, transparent);
+}
+
+@font-face {
+  font-family: 'Old Standard Fallback';
+  src: local('Georgia');
+  size-adjust: 92%;
+  ascent-override: 98%;
+  descent-override: 30%;
+}
+
+@font-face {
+  font-family: 'Golos Fallback';
+  src: local('Arial');
+  size-adjust: 101%;
+  ascent-override: 96%;
+  descent-override: 26%;
+}

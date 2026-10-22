@@ -1,0 +1,407 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* No grey flash on tap: every control has its own :active feedback instead. */
+  -webkit-tap-highlight-color: transparent;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+  interpolate-size: allow-keywords;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--c-text);
+  background-color: var(--c-bg);
+  background-image:
+    radial-gradient(1100px 760px at 88% -6%, color-mix(in oklab, var(--c-amethyst) 16%, transparent), transparent 62%),
+    radial-gradient(900px 700px at -12% 30%, color-mix(in oklab, var(--c-rose) 9%, transparent), transparent 62%);
+  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* Fine grain over everything: a static texture, free while scrolling. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 0.85em;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--c-amethyst) 45%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-gold);
+  outline-offset: 4px;
+}
+
+main:focus,
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: 0.5rem;
+  z-index: 300;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: var(--c-gold);
+  color: var(--c-on-gold);
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--wrap) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
+}
+
+/* ---------- Cursor light ---------- */
+
+.cursor-glow {
+  position: fixed;
+  left: -260px;
+  top: -260px;
+  z-index: 0;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--c-amethyst) 16%, transparent), transparent);
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.cursor-glow[data-active='true'] {
+  opacity: 1;
+}
+
+main,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Type ---------- */
+
+/* A handwritten note, used sparingly for the practitioner's own voice. */
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  color: var(--c-gold);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-space);
+}
+
+.section-heading {
+  max-width: 44rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.section-lead {
+  max-width: var(--measure);
+  margin-top: var(--space-3);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  color: var(--c-text-muted);
+  text-wrap: pretty;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ---------- Controls ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 1.6rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--font-text);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--dur-ui) ease,
+    border-color var(--dur-ui) ease,
+    color var(--dur-ui) ease,
+    box-shadow 400ms var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--primary {
+  color: var(--c-on-gold);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--c-gold), white 22%), var(--c-gold) 70%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    0 14px 34px -14px color-mix(in oklab, var(--c-gold) 75%, transparent);
+}
+
+.btn--secondary {
+  color: var(--c-ivory);
+  border-color: color-mix(in oklab, var(--c-ivory) 32%, transparent);
+  background: color-mix(in oklab, var(--c-surface) 50%, transparent);
+}
+
+.btn--compact {
+  min-height: 42px;
+  padding: 0 1.1rem;
+  font-size: 0.92rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn--primary:hover {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.6),
+      0 18px 40px -10px color-mix(in oklab, var(--c-gold) 85%, transparent),
+      0 0 0 5px color-mix(in oklab, var(--c-gold) 16%, transparent);
+  }
+
+  .btn--secondary:hover {
+    border-color: var(--c-line-strong);
+    background: var(--c-surface);
+  }
+}
+
+.text-link,
+.text-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 500;
+  color: var(--c-gold);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in oklab, var(--c-gold) 45%, transparent);
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+  transition:
+    text-underline-offset var(--dur-ui) var(--ease-out),
+    text-decoration-color var(--dur-ui) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .text-link:hover,
+  .text-button:hover {
+    text-decoration-color: currentColor;
+    text-underline-offset: 0.18em;
+  }
+}
+
+/* ---------- Photographs ---------- */
+
+.photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-photo);
+  background: var(--c-surface-deep);
+  box-shadow: var(--shadow-photo);
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Empty slot where a photo will go: a quiet surface, nothing else. */
+.photo--empty {
+  background:
+    radial-gradient(120% 90% at 30% 15%, color-mix(in oklab, var(--c-amethyst) 14%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--c-surface), var(--c-surface-deep));
+}
+
+/*
+ * Photo reveals linked to scroll position: nothing can get stuck hidden, and
+ * without view-timeline support or with reduced motion photos simply show.
+ * Text arrives separately, once, via useScrollReveal and motion.css.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .photo--reveal {
+      animation: frame-open linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+
+    .photo--reveal img {
+      animation: image-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 55%;
+    }
+
+  }
+}
+
+@keyframes frame-open {
+  from {
+    clip-path: inset(0 0 30% 0 round var(--radius-photo));
+  }
+  to {
+    clip-path: inset(0 round var(--radius-photo));
+  }
+}
+
+@keyframes image-settle {
+  from {
+    transform: scale(1.12) translateY(-3%);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .btn:active {
+    transform: none;
+  }
+
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* ---------- Touch: the platform layer (iOS Safari, Android Chrome) ---------- */
+
+/* Clicks fire at once (no double-tap-zoom wait); labels of controls are not selectable
+   by a long press, which on iOS would select the word or pop the callout. */
+button,
+a,
+label,
+summary,
+[role='button'] {
+  touch-action: manipulation;
+}
+
+button,
+summary,
+[role='button'],
+.btn,
+.chip,
+.day,
+.slot,
+.channel,
+.tarot,
+.wheel__card,
+.arrow-control {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* iOS zooms into any field under 16px and never zooms back; keep fields at 16px on touch. */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+

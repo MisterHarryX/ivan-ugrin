@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-pages/
+*.log
+# Local secrets, data and Vercel link
+.env*
+!.env.example
+.data/
+.vercel/
+.vercel-admin.local
+
+.vercel

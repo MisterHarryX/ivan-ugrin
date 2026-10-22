@@ -1,0 +1,42 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ivan-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5177",
+        "--strictPort"
+      ],
+      "port": 5177,
+      "url": "http://127.0.0.1:5177"
+    },
+    {
+      "name": "ivan-pages",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--mode",
+        "pages",
+        "--base",
+        "/ivan-ugrin/",
+        "--outDir",
+        "dist-pages",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5178",
+        "--strictPort"
+      ],
+      "port": 5178,
+      "url": "http://127.0.0.1:5178"
+    }
+  ]
+}

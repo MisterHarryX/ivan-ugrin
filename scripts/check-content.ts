@@ -1,0 +1,12 @@
+import { site } from '../src/config/site.ts';
+const missing: string[] = [];
+if (site.practitioner.sample) missing.push('Replace demo identity and practice description; set practitioner.sample=false.');
+if (!site.practitioner.portrait.src) missing.push('Add the practitioner’s own portrait.');
+if (!site.practitioner.credentials.length) missing.push('Add verified education and qualifications.');
+if (site.services.items.some(s => s.sample)) missing.push('Confirm prices, payment and cancellation terms; clear sample flags.');
+if (!site.contacts.some(c => c.value && !c.sample)) missing.push('Configure a real contact channel.');
+if (!site.meta.url) missing.push('Set the production URL.');
+console.log(`Template status: ${site.meta.status}. Launch checklist:`);
+missing.forEach(s => console.log(`- ${s}`));
+console.log('- Review data processing and confidentiality wording with the practitioner.');
+if (site.meta.status === 'published' && missing.length) process.exitCode = 1;
