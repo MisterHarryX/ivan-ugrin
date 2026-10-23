@@ -723,7 +723,7 @@ button, [role="button"], [role="tab"], .btn, .chip, .place, .rv-arrow, .rv-topic
 .hero__stage { position: relative; display: grid; place-items: center; width: 100%; }
 .hero__frame { width: min(100%, 430px, calc(100svh - 380px)); min-width: 220px; aspect-ratio: 1; }
 .hero__arch { border-radius: 50%; }
-.hero__photo { object-position: 50% 26%; scale: 1.03; }
+.hero__photo { object-position: 50% 50%; scale: 1.03; }
 .hero__outline { left: -5.4545%; top: -5.4545%; width: 110.909%; height: 110.909%; }
 .hero__film-toggle { right: auto; left: 15%; bottom: 6%; }
 .hero__paper { left: auto; right: max(-64px, calc(12px - var(--gutter))); bottom: 1%; width: 214px; padding: 20px 22px 18px; rotate: 4deg; }

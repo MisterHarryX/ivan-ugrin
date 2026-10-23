@@ -109,8 +109,8 @@ export function Hero() {
           <div className="hero__frame" data-depth="-6,-5">
             <svg className="hero__outline" viewBox="-24 -24 488 488" aria-hidden="true"><path d="M220 -6a226 226 0 1 1 0 452a226 226 0 1 1 0-452" pathLength={1} /><path className="hero__outline--far" d="M220 -18a238 238 0 1 0 0 476a238 238 0 1 0 0-476" pathLength={1} /></svg>
             <div className="hero__arch">
-              <img className="hero__photo" src={asset('/photos/ivan-painted-960.webp')} srcSet={`${asset('/photos/ivan-painted-640.webp')} 640w, ${asset('/photos/ivan-painted-960.webp')} 960w`} sizes="(max-width: 850px) 78vw, 440px" alt={hero.imageAlt} fetchPriority="high" width="960" height="1280" />
-              <HeroFilm src={asset('/photos/ivan-painted-960.jpg')} />
+              <img className="hero__photo" src={asset('/photos/ivan-photo-960.webp')} srcSet={`${asset('/photos/ivan-photo-640.webp')} 640w, ${asset('/photos/ivan-photo-960.webp')} 960w`} sizes="(max-width: 850px) 78vw, 440px" alt={hero.imageAlt} fetchPriority="high" width="960" height="960" />
+              <HeroFilm src={asset('/photos/ivan-photo-960.jpg')} />
               <span className="hero__shine" aria-hidden="true" />
             </div>
           </div>

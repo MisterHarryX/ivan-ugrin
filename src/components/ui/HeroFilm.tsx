@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 const VERT = `attribute vec2 p; varying vec2 v; void main(){ v = vec2(p.x * .5 + .5, .5 - p.y * .5); gl_Position = vec4(p, 0., 1.); }`;
 
 /*
- * A living painting: Ivan's portrait in oils, where the leaves stir and catch the sun,
+ * A living photo: Ivan by the river (square shot), where the leaves stir and catch the sun,
  * the river glints, the clouds drift and soft rays follow the pointer a little.
  * The face, beard and coat are masked out, so the person always stays perfectly still.
  * Everything is computed from the one picture; no video file to download.
@@ -29,7 +29,7 @@ void main(){
   float t = u_time;
   vec2 tuv0 = cover(.5 + (uv - .5) / 1.03);
   // The person: head, beard and coat stay still.
-  float face = 1. - smoothstep(.26, .36, length((tuv0 - vec2(.5, .43)) * vec2(1., .78)));
+  float face = 1. - smoothstep(.26, .36, length((tuv0 - vec2(.52, .45)) * vec2(1., .78)));
   float coat = smoothstep(.6, .7, tuv0.y) * smoothstep(.95, .75, abs(tuv0.x - .5) * 2.2 + .2);
   float still = clamp(max(face, coat), 0., 1.);
   float free = 1. - still;
@@ -37,7 +37,7 @@ void main(){
   float leaves = free * smoothstep(.62, .2, tuv0.y) * (smoothstep(.62, .18, tuv0.x) + smoothstep(.3, .05, tuv0.y));
   leaves = clamp(leaves, 0., 1.);
   // River on the right, clouds in the sky above it.
-  float water = free * smoothstep(.72, .8, tuv0.x) * smoothstep(.5, .54, tuv0.y) * smoothstep(.7, .64, tuv0.y);
+  float water = free * smoothstep(.78, .84, tuv0.x) * smoothstep(.74, .78, tuv0.y) * smoothstep(.9, .85, tuv0.y);
   float sky = free * smoothstep(.66, .78, tuv0.x) * smoothstep(.5, .4, tuv0.y);
   vec2 d = vec2(0.);
   d += (vec2(fbm(uv * 9. + vec2(t * .35, 0.)), fbm(uv * 9. + vec2(0., t * .3) + 4.)) - .5) * .012 * leaves;
@@ -75,9 +75,11 @@ export function HeroFilm({ src }: { src: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ready, setReady] = useState(false);
   const [paused, setPaused] = useState(false);
+  // The photo was swapped in the live editor: the film shows the old picture, so it steps aside.
+  const [replaced, setReplaced] = useState(false);
   const pausedRef = useRef(false);
   const wake = useRef<() => void>(() => {});
-  pausedRef.current = paused;
+  pausedRef.current = paused || replaced;
 
   useEffect(() => {
     const el = canvas.current;
@@ -156,11 +158,21 @@ export function HeroFilm({ src }: { src: string }) {
     return () => { alive = false; img.onload = null; cancelAnimationFrame(frame); ro.disconnect(); io.disconnect(); document.removeEventListener('visibilitychange', onVis); window.removeEventListener('pointermove', onMove); };
   }, [src]);
 
-  useEffect(() => { if (!paused) wake.current(); }, [paused]);
+  useEffect(() => { if (!paused && !replaced) wake.current(); }, [paused, replaced]);
+
+  useEffect(() => {
+    const img = canvas.current?.parentElement?.querySelector<HTMLImageElement>('img.hero__photo');
+    if (!img) return;
+    const check = () => setReplaced(img.dataset.origSrc !== undefined && img.getAttribute('src') !== img.dataset.origSrc);
+    check();
+    const mo = new MutationObserver(check);
+    mo.observe(img, { attributes: true, attributeFilter: ['src', 'data-orig-src'] });
+    return () => mo.disconnect();
+  }, []);
 
   return <>
-    <canvas ref={canvas} className="hero__film" data-ready={ready} aria-hidden="true" />
-    {ready && <button type="button" className="hero__film-toggle" aria-pressed={paused} aria-label={paused ? 'Оживить картину' : 'Остановить анимацию картины'} onClick={() => setPaused(p => !p)}>
+    <canvas ref={canvas} className="hero__film" data-ready={ready && !replaced} aria-hidden="true" />
+    {ready && !replaced && <button type="button" className="hero__film-toggle" aria-pressed={paused} aria-label={paused ? 'Оживить картину' : 'Остановить анимацию картины'} onClick={() => setPaused(p => !p)}>
       {paused ? <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z" /></svg> : <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5h2v9H5zM9 3.5h2v9H9z" /></svg>}
     </button>}
   </>;
