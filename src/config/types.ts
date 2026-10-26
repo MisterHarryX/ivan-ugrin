@@ -7,7 +7,11 @@ export interface Service { id: string; title: string; summary: string; duration:
 export interface Review { name: string; date: string; text: string; context?: string; tags: string[]; highlight?: string }
 export interface Video { id: string; title: string; kind: string; date: string }
 export interface SiteConfig {
-  meta: { status: 'draft' | 'published'; title: string; description: string; url?: string; brand: string; tagline: string };
+  meta: {
+    status: 'draft' | 'published'; title: string; description: string; url?: string; brand: string; tagline: string;
+    /** Link preview card in messengers (og:title / og:description); falls back to title and description. */
+    share?: { title: string; description: string };
+  };
   theme: ThemeColors;
   sections: { about: boolean; topics: boolean; principles: boolean; method: boolean; gallery: boolean; services: boolean; process: boolean; reviews: boolean; reflection: boolean; location: boolean; project: boolean; faq: boolean };
   hero: { headline: string; accent: string; accents: string[]; lead: string; primaryAction: string; secondaryAction: string; note: string; imageAlt: string; ring: string; paper: { text: string; accent: string; small: string }; facts: { value: number; before: string; after: string }[]; formats: { title: string; place?: string; lines: string[]; accent?: string; href: string }[] };

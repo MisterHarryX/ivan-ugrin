@@ -14,9 +14,9 @@ npm run dev -- --host 127.0.0.1 --port 5177 --strictPort
 
 ## Сайт в интернете
 
-- Адрес: https://ivan-ugrin.vercel.app (Vercel, команда `writelite`, проект `ivan-ugrin`).
-- Кабинет: https://ivan-ugrin.vercel.app/admin, пароль задан в переменной `ADMIN_PASSWORD` проекта на Vercel (и локально в `.env.local`).
-- Редактор на сайте: войдите в кабинет и откройте https://ivan-ugrin.vercel.app/?edit. Правка любого текста, фото, контактов (Telegram, Max), затем «Опубликовать».
+- Адрес: https://ivanugrinpsru.ru (Vercel, команда `writelite`, проект `ivan-ugrin`; домен в reg.ru). www и старый адрес ivan-ugrin.vercel.app перенаправляют сюда, кроме `/api` на vercel.app — его использует копия на GitHub Pages.
+- Кабинет: https://ivanugrinpsru.ru/admin, пароль задан в переменной `ADMIN_PASSWORD` проекта на Vercel (и локально в `.env.local`).
+- Редактор на сайте: войдите в кабинет и откройте https://ivanugrinpsru.ru/?edit. Правка любого текста, фото, контактов (Telegram, Max), затем «Опубликовать».
 - Хранилища: база Upstash Redis и Vercel Blob общие с проектом `psixolog`, данные Ивана лежат отдельно (ключи `ugrin:*`, фото в `ugrin/media/`). При желании подключите отдельную базу в Vercel → Storage и замените `KV_REST_API_*` и `BLOB_READ_WRITE_TOKEN`.
 - Обновить сайт: `git push` в `main` — Vercel соберёт его сам (см. раздел GitHub).
 
@@ -25,7 +25,7 @@ npm run dev -- --host 127.0.0.1 --port 5177 --strictPort
 - Код: https://github.com/MisterHarryX/ivan-ugrin (открытый). Пароли, заявки и данные (`.env.local`, `.data/`) в репозиторий не попадают.
 - Копия на GitHub Pages: https://misterharryx.github.io/ivan-ugrin/ — та же страница. Заявки, свободное время и правки из редактора она берёт с сервера на Vercel (в `server/http.ts` этот адрес разрешён), поэтому заявки с обеих копий попадают в один кабинет. Сам кабинет и редактор работают только на Vercel.
 - Обновить копию на GitHub Pages: `npm run deploy:pages` (собирает в `dist-pages` и отправляет в ветку `gh-pages`).
-- Vercel подключён к репозиторию: после каждого `git push` в ветку `main` сайт ivan-ugrin.vercel.app пересобирается сам (1–2 минуты). `vercel deploy --prod` больше не нужен.
+- Vercel подключён к репозиторию: после каждого `git push` в ветку `main` сайт ivanugrinpsru.ru пересобирается сам (1–2 минуты). `vercel deploy --prod` больше не нужен.
 
 ## Блоки страницы
 
@@ -70,3 +70,9 @@ npm run dev -- --host 127.0.0.1 --port 5177 --strictPort
 - iOS/Android: цвет строки состояния (`theme-color`), иконки для «На экран Домой» (`apple-touch-icon.png`, `icon-192/512.png`, `site.webmanifest`), без синей подсветки при нажатии, без выделения текста кнопок долгим нажатием, поля ввода 16px (iPhone не приближает страницу), отступы от «чёлки» в альбомной ориентации.
 - Сборка добавляет префиксы для старых Safari (iOS 15–17) через lightningcss — настройки в `vite.config.ts`.
 - На очень больших мониторах (от 2200px) колонка шире и шрифт чуть крупнее.
+
+## Поиск и превью ссылки
+
+- Статус `published` в `src/config/site.ts`: страница открыта для индексации. Заголовок и описание для поиска — `meta.title` и `meta.description`.
+- Превью в мессенджерах: `meta.share` (короткие заголовок и описание) и картинка `public/og.jpg`. Исходник картинки — `_source/og/og-image.html` (1200×630, отрисовать в браузере и сохранить в JPEG до 300 КБ). При замене картинки меняйте имя файла, иначе мессенджеры покажут старую из кэша.
+- Для поисковиков: `public/robots.txt`, `public/sitemap.xml`, данные schema.org (специалист, практика, ссылки на B17 и каналы) и текстовая версия страницы в `<noscript>` — всё это собирается в `vite.config.ts`.

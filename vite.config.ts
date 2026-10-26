@@ -8,6 +8,66 @@ import { themeToCss } from './src/theme/themeCss.ts';
 const escapeHtml = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** schema.org data for search engines: who the practitioner is, where and how to reach them. */
+function structuredData(home: string, image: string) {
+  const { meta, practitioner, contacts, project, location } = site;
+  const phone = contacts.find((c) => c.kind === 'telegram' || c.kind === 'max')?.value;
+  const profiles = [
+    ...contacts.filter((c) => c.kind === 'booking').map((c) => c.value),
+    ...project.channels.map((c) => c.url),
+  ];
+  const place = location.places?.[0];
+  const person = {
+    '@type': 'Person',
+    '@id': `${home}#person`,
+    name: practitioner.name,
+    jobTitle: practitioner.role,
+    description: meta.description,
+    url: home,
+    image,
+    telephone: phone,
+    sameAs: profiles,
+  };
+  const service = {
+    '@type': 'ProfessionalService',
+    '@id': `${home}#practice`,
+    name: `${practitioner.name} — психолог`,
+    description: meta.description,
+    url: home,
+    image,
+    telephone: phone,
+    priceRange: '6 000–10 000 ₽',
+    address: { '@type': 'PostalAddress', addressLocality: 'Москва', addressCountry: 'RU' },
+    ...(place ? { geo: { '@type': 'GeoCoordinates', latitude: place.lat, longitude: place.lon } } : {}),
+    areaServed: ['Москва', 'Онлайн'],
+    founder: { '@id': `${home}#person` },
+    sameAs: profiles,
+  };
+  const website = { '@type': 'WebSite', '@id': `${home}#site`, name: meta.brand, url: home, inLanguage: 'ru' };
+  // "<" is escaped so the JSON can never close the script tag early.
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': [website, person, service] }).replace(/</g, '\\u003c');
+}
+
+/** What visitors and crawlers without JavaScript see: who, where, how to book. */
+function noscript() {
+  const { meta, practitioner, services, contacts } = site;
+  const phone = contacts.find((c) => c.kind === 'telegram' || c.kind === 'max')?.value ?? '';
+  const prices = services.items
+    .filter((s) => !s.sample)
+    .map((s) => `<li>${escapeHtml(s.title)} — ${escapeHtml(s.duration)}, ${s.price.amount.toLocaleString('ru-RU')} ${escapeHtml(s.price.currency)}</li>`)
+    .join('');
+  return [
+    '<div style="max-width:42rem;padding:2rem;color:#F6EFE5;font-family:system-ui,sans-serif;line-height:1.5">',
+    `<h1>${escapeHtml(practitioner.name)} — ${escapeHtml(practitioner.role.toLowerCase())}</h1>`,
+    `<p>${escapeHtml(meta.description)}</p>`,
+    ...practitioner.intro.map((p) => `<p>${escapeHtml(p)}</p>`),
+    prices ? `<h2>Форматы и стоимость</h2><ul>${prices}</ul>` : '',
+    phone ? `<p>Запись: Telegram или Max <a style="color:#eabf52" href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a></p>` : '',
+    '<p>Для полной версии сайта включите JavaScript.</p>',
+    '</div>',
+  ].join('');
+}
+
 const PRELOAD_FONTS = [/cormorant-garamond-cyrillic-400-normal-[\w-]+\.woff2$/, /ibm-plex-sans-cyrillic-400-normal-[\w-]+\.woff2$/];
 
 /** Injects metadata and theme tokens from the site config into index.html at build and dev time. */
@@ -24,6 +84,9 @@ function siteHead(): Plugin {
       const preloads = Object.keys(ctx.bundle ?? {})
         .filter((file) => PRELOAD_FONTS.some((pattern) => pattern.test(file)))
         .map((file) => `<link rel="preload" href="${base}${file}" as="font" type="font/woff2" crossorigin />`);
+      const home = meta.url ? `${meta.url}/` : '';
+      const image = meta.url ? `${meta.url}/og.jpg` : '';
+      const share = meta.share ?? { title: meta.title, description: meta.description };
       const tags = [
         ...preloads,
         `<title>${escapeHtml(meta.title)}</title>`,
@@ -31,27 +94,27 @@ function siteHead(): Plugin {
         `<meta name="theme-color" content="${escapeHtml(theme.background)}" />`,
         `<meta property="og:type" content="website" />`,
         `<meta property="og:locale" content="ru_RU" />`,
-        `<meta property="og:site_name" content="${escapeHtml(meta.brand)}" />`,
-        `<meta property="og:title" content="${escapeHtml(meta.title)}" />`,
-        `<meta property="og:description" content="${escapeHtml(meta.description)}" />`,
+        `<meta property="og:title" content="${escapeHtml(share.title)}" />`,
+        `<meta property="og:description" content="${escapeHtml(share.description)}" />`,
         // Link preview card (Telegram, WhatsApp, VK): 1200×630 JPEG under 300 KB (WhatsApp skips heavier ones).
-        meta.url ? `<meta property="og:image" content="${escapeHtml(meta.url)}/og-ivan.jpg" />` : '',
-        meta.url ? `<meta property="og:image:secure_url" content="${escapeHtml(meta.url)}/og-ivan.jpg" />` : '',
+        image ? `<meta property="og:image" content="${escapeHtml(image)}" />` : '',
+        image ? `<meta property="og:image:secure_url" content="${escapeHtml(image)}" />` : '',
         `<meta property="og:image:type" content="image/jpeg" />`,
         `<meta property="og:image:width" content="1200" />`,
         `<meta property="og:image:height" content="630" />`,
-        `<meta property="og:image:alt" content="${escapeHtml(`${meta.brand} — интегральный психолог. Жизнь не против вас — она за вас.`)}" />`,
+        `<meta property="og:image:alt" content="${escapeHtml(`${meta.brand} — психолог, Москва и онлайн`)}" />`,
         `<meta name="twitter:card" content="summary_large_image" />`,
-        `<meta name="twitter:title" content="${escapeHtml(meta.title)}" />`,
-        `<meta name="twitter:description" content="${escapeHtml(meta.description)}" />`,
-        meta.url ? `<meta name="twitter:image" content="${escapeHtml(meta.url)}/og-ivan.jpg" />` : '',
-        meta.url ? `<link rel="canonical" href="${escapeHtml(meta.url)}" />` : '',
-        meta.url ? `<meta property="og:url" content="${escapeHtml(meta.url)}" />` : '',
+        `<meta name="twitter:title" content="${escapeHtml(share.title)}" />`,
+        `<meta name="twitter:description" content="${escapeHtml(share.description)}" />`,
+        image ? `<meta name="twitter:image" content="${escapeHtml(image)}" />` : '',
+        home ? `<link rel="canonical" href="${escapeHtml(home)}" />` : '',
+        home ? `<meta property="og:url" content="${escapeHtml(home)}" />` : '',
         // Draft builds must not be indexed by search engines.
         meta.status === 'draft' ? `<meta name="robots" content="noindex, nofollow" />` : '',
+        meta.status === 'published' && home ? `<script type="application/ld+json">${structuredData(home, image)}</script>` : '',
         `<style id="theme-tokens">${themeToCss(theme)}</style>`,
       ].filter(Boolean);
-      return html.replace('<!-- site:head -->', tags.join('\n    '));
+      return html.replace('<!-- site:head -->', tags.join('\n    ')).replace('<!-- site:noscript -->', noscript());
     },
   };
 }
