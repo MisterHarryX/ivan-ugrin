@@ -44,7 +44,7 @@ export function cookie(
  * the static copy on GitHub Pages, plus any listed in ALLOWED_ORIGINS (comma-separated).
  * Admin routes never accept them.
  */
-const TRUSTED_ORIGINS = new Set(['https://misterharryx.github.io', ...(process.env.ALLOWED_ORIGINS ?? '').split(',').map((o) => o.trim()).filter(Boolean)]);
+const TRUSTED_ORIGINS = new Set(['https://ivanugrinpsru.ru', 'https://www.ivanugrinpsru.ru', 'https://misterharryx.github.io', ...(process.env.ALLOWED_ORIGINS ?? '').split(',').map((o) => o.trim()).filter(Boolean)]);
 
 /** The request's Origin when it is one of the trusted sites, else null. */
 export function trustedOrigin(request: Request) {

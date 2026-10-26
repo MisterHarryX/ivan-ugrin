@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:pages": "tsc && vite build --mode pages --base /ivan-ugrin/ --outDir dist-pages --emptyOutDir",
+    "build:pages": "tsc && vite build --mode pages --base / --outDir dist-pages --emptyOutDir",
     "deploy:pages": "npm run build:pages && node scripts/deploy-pages.mjs",
     "preview": "vite preview",
     "typecheck": "tsc",

@@ -20,7 +20,8 @@ import { hasPageEdits, setPageEdits } from './lib/liveLayer.ts';
 import { themeToCss } from './theme/themeCss.ts';
 
 async function boot() {
-  const content = await getContent(2500);
+  // On GitHub Pages the API is on Vercel, which some Russian mobile networks cut off: wait less for it.
+  const content = await getContent(import.meta.env.MODE === 'pages' ? 1500 : 2500);
   rememberPristine(site, content);
   if (content) applyOverrides(site, content);
   document.title = site.meta.title;

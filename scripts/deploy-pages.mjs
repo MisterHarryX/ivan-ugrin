@@ -1,5 +1,5 @@
 // Publishes the static copy (dist-pages, built by `npm run build:pages`) to the gh-pages branch.
-// GitHub Pages serves that branch at https://misterharryx.github.io/ivan-ugrin/.
+// GitHub Pages serves that branch at https://ivanugrinpsru.ru (CNAME below).
 import { execFileSync } from 'node:child_process';
 import { existsSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -13,6 +13,8 @@ const remote = execFileSync('git', ['remote', 'get-url', 'origin'], { cwd: root,
 
 // GitHub Pages would otherwise skip files and folders that start with "_".
 writeFileSync(resolve(out, '.nojekyll'), '');
+// The site's own domain: GitHub Pages serves the copy at https://ivanugrinpsru.ru.
+writeFileSync(resolve(out, 'CNAME'), 'ivanugrinpsru.ru\n');
 // A fresh one-commit branch each time: the copy is rebuilt from source, its history is not needed.
 rmSync(resolve(out, '.git'), { recursive: true, force: true });
 git(['init', '-q', '-b', 'gh-pages']);
@@ -20,4 +22,4 @@ git(['add', '-A']);
 git(['-c', 'user.name=Ivan Ugrin site', '-c', 'user.email=noreply@github.com', 'commit', '-q', '-m', 'Static copy for GitHub Pages']);
 git(['push', '-f', remote, 'gh-pages']);
 rmSync(resolve(out, '.git'), { recursive: true, force: true });
-console.log('Published: https://misterharryx.github.io/ivan-ugrin/');
+console.log('Published: https://ivanugrinpsru.ru/');

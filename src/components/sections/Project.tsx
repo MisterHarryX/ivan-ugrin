@@ -1,5 +1,15 @@
-import { useState } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { site } from '../../config/site.ts';
+import { asset } from '../../lib/paths.ts';
+
+/** Covers are kept on the site (public/podcast/<id>.jpg): YouTube images often fail to load in Russia. */
+const cover = (id: string) => asset(`/podcast/${id}.jpg`);
+/** An episode added later in the editor has no saved cover yet: fall back to YouTube's. */
+const coverFallback = (id: string) => (event: SyntheticEvent<HTMLImageElement>) => {
+  const img = event.currentTarget;
+  const youtube = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  if (img.src !== youtube) img.src = youtube;
+};
 
 const CHANNEL_ICON: Record<string, string> = {
   telegram: 'M21 4 3 11l6 2 2 6 3-4 5 4 2-15ZM9 13l9-6-6.5 7.5',
@@ -39,14 +49,14 @@ export function Project() {
           {playing
             ? <iframe src={`https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0`} title={v.title} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
             : <button type="button" className="player__poster" onClick={() => setPlaying(true)} aria-label={`Смотреть: ${v.title}`}>
-              <img key={v.id} src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" loading="lazy" width="480" height="360" />
+              <img key={v.id} src={cover(v.id)} onError={coverFallback(v.id)} alt="" loading="lazy" width="480" height="360" />
               <span className="player__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></span>
               <span className="player__meta"><small>{v.kind} · {v.date}</small><strong>{v.title}</strong></span>
             </button>}
         </div>
         <ol className="player__list" aria-label="Выпуски">{project.videos.map((ep, i) => <li key={ep.id}>
           <button aria-current={i === active || undefined} onClick={() => pick(i)}>
-            <span className="player__thumb"><img src={`https://i.ytimg.com/vi/${ep.id}/mqdefault.jpg`} alt="" loading="lazy" width="160" height="90" /></span>
+            <span className="player__thumb"><img src={cover(ep.id)} onError={coverFallback(ep.id)} alt="" loading="lazy" width="160" height="90" /></span>
             <span className="player__ep"><small>{ep.kind}</small><span>{ep.title}</span></span>
           </button>
         </li>)}</ol>

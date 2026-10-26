@@ -1,20 +1,28 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "regions": ["fra1"],
-  "redirects": [
-    {
-      "source": "/:path((?!api/).*)",
-      "has": [{ "type": "host", "value": "ivan-ugrin.vercel.app" }],
-      "destination": "https://ivanugrinpsru.ru/:path",
-      "permanent": true
-    }
+  "regions": [
+    "fra1"
   ],
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index?route=:path*" },
-    { "source": "/admin", "destination": "/admin.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index?route=:path*"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    }
   ],
   "headers": [
-    { "source": "/admin(.html)?", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
+    {
+      "source": "/admin(.html)?",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
   ]
 }
